@@ -2,7 +2,7 @@
     "name": "unityprojectcloner",
     "displayName": "Unity Project Cloner",
     "version": "0.0.1",
-    "unity": "2020.3.25",
+    "unity": "2020.3.25f1",
     "description": "A tool to let the user quickly clone their project, for multiplayer testing.",
     "keywords": [
         "multiplayer",
