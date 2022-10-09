@@ -142,16 +142,17 @@ namespace UnityProjectCloner
                 {
                     string fileName = EditorApplication.applicationPath;
                     string args = "-projectPath \"" + projectPath + "\"";
-                    Debug.Log("Opening project \"" + fileName + " " + args + "\"");
+                    Debug.Log("Opening windows project \"" + fileName + " " + args + "\"");
                     ProjectCloner.StartHiddenConsoleProcess(fileName, args);
                     break;
                 }
                 case (RuntimePlatform.OSXEditor):
                 {
                     string fileName = EditorApplication.applicationPath + "/Contents/MacOS/Unity";
-                    string path = string.Format(" -projectPath \"{0}\"", projectPath);
-                    string args = string.Format("-c \"{0}\" {1}",fileName, path);
-                    Debug.Log("Opening project \"" + args);
+                    string newProjectPath = projectPath.Replace(" ", "\\ ");
+                    string path = string.Format("-projectPath {0}", newProjectPath);
+                    string args = string.Format("-c \"{0} {1}\"", fileName, path);
+                    Debug.Log("Opening mac project : " + args);
                     ProjectCloner.StartHiddenConsoleProcess("/bin/bash", args);
                     break;
                 }
@@ -190,14 +191,14 @@ namespace UnityProjectCloner
                     break;
                 case (RuntimePlatform.OSXEditor):
                     Debug.Log("Attempting to delete folder \"" + cloneProjectPath + "\"");
+                    cloneProjectPath = cloneProjectPath.Replace(" ", "\\ ");
                     args = string.Format("-c \"rm -rf {0}\"", cloneProjectPath);
-                    
                     ProjectCloner.StartHiddenConsoleProcess("/bin/bash", args);
                     break;
                 case (RuntimePlatform.LinuxEditor):
                     Debug.Log("Attempting to delete folder \"" + cloneProjectPath + "\"");
+                    cloneProjectPath = cloneProjectPath.Replace(" ", "\\ ");
                     args = string.Format("-c \"rm -rf {0}\"", cloneProjectPath);
-                    
                     ProjectCloner.StartHiddenConsoleProcess("/bin/bash", args);
                     break;
                 default:
@@ -258,7 +259,9 @@ namespace UnityProjectCloner
         /// <param name="destinationPath"></param>
         private static void CreateLinkLinux(string sourcePath, string destinationPath)
         {
-            string cmd = string.Format("-c \"ln -s {0} {1}\"", sourcePath, destinationPath);
+            string newSourcePath = sourcePath.Replace(" ", "\\ ");
+            string newDestinationPath = destinationPath.Replace(" ", "\\ ");
+            string cmd = string.Format("-c \"ln -s {0} {1}\"", newSourcePath, newDestinationPath);
             Debug.Log("Linux junction: " + cmd);
             ProjectCloner.StartHiddenConsoleProcess("/bin/bash", cmd);
         }
@@ -503,7 +506,6 @@ namespace UnityProjectCloner
             process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             process.StartInfo.FileName = fileName;
             process.StartInfo.Arguments = args;
-
             process.Start();
         }
         #endregion
